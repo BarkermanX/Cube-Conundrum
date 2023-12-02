@@ -25,7 +25,7 @@ int iResult5 = Helper.isValidGame(strGame5); // return 5
 int iSum = iResult1 + iResult2 + iResult3 + iResult4 + iResult5;
 
 
-// Specify the path to the file
+// Specify the path to the game test file
 string filePath = "GameData.txt";
 iSum = 0;
 
