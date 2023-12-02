@@ -1,4 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 using System.Text.RegularExpressions;
 
 
@@ -25,8 +25,22 @@ int iResult5 = Helper.isValidGame(strGame5); // return 5
 int iSum = iResult1 + iResult2 + iResult3 + iResult4 + iResult5;
 
 
-// Specify the path to the game test file
+// Power
+// The power of the minimum set of cubes in game 1 is 48.
+// In games 2-5 it was 12, 1560, 630, and 36, respectively. Adding up these five powers produces the sum 2286.
+
+iResult1 = Helper.isValidGame(strGame1, false); // return 48
+iResult2 = Helper.isValidGame(strGame2, false); // return 12
+iResult3 = Helper.isValidGame(strGame3, false); // reutrn 1560
+iResult4 = Helper.isValidGame(strGame4, false); // return 630
+iResult5 = Helper.isValidGame(strGame5, false); // return 36
+
+iSum = iResult1 + iResult2 + iResult3 + iResult4 + iResult5;
+
+
+// Specify the path to the game data file (SB)
 string filePath = "GameData.txt";
+
 iSum = 0;
 
 try
@@ -38,7 +52,7 @@ try
     Console.WriteLine("File Content:");
     foreach (string line in lines)
     {
-        int iResult = Helper.isValidGame(line);
+        int iResult = Helper.isValidGame(line, false);
 
         iSum += iResult;
     }
@@ -55,7 +69,7 @@ public static class Helper
 {
     #region isValidGame
 
-    public static int isValidGame(string strLine)
+    public static int isValidGame(string strLine,  bool bRestictCubeNumbers = true)
     {
         //SPEC
         // Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
@@ -82,6 +96,10 @@ public static class Helper
 
         // Data Part
         string[] astrDraws = astrSplit[1].Split(';');
+
+        int iNeededRedCubes = 0;
+        int iNeededGreenCubes = 0;
+        int iNeededBlueCubes = 0;
 
         foreach (string strDraw in astrDraws)
         {
@@ -126,26 +144,36 @@ public static class Helper
                 }
             }
 
-            // Check that not too many cubes are used!
-            // 12 red cubes, 13 green cubes, and 14 blue cubes
-            if (iRedCubes > 12)
+            if (bRestictCubeNumbers)
             {
-                return 0;
+                // Check that not too many cubes are used!
+                // 12 red cubes, 13 green cubes, and 14 blue cubes
+                if (iRedCubes > 12)
+                {
+                    return 0;
+                }
+
+                if (iGreenCubes > 13)
+                {
+                    return 0;
+                }
+
+                if (iBlueCubes > 14)
+                {
+                    return 0;
+                }
             }
 
-            if (iGreenCubes > 13)
-            {
-                return 0;
-            }
-
-            if (iBlueCubes > 14)
-            {
-                return 0;
-            }
+            iNeededRedCubes = (iNeededRedCubes < iRedCubes) ? iRedCubes : iNeededRedCubes;
+            iNeededGreenCubes = (iNeededGreenCubes < iGreenCubes) ? iGreenCubes : iNeededGreenCubes;
+            iNeededBlueCubes = (iNeededBlueCubes < iBlueCubes) ? iBlueCubes : iNeededBlueCubes;
         }
 
+        int iPower = iNeededRedCubes * iNeededGreenCubes * iNeededBlueCubes;
+        return iPower;
+
         // Game is valid, return game number!
-        return iGameNumber;
+        //return iGameNumber;
     }
 
     #endregion
